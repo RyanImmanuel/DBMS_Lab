@@ -56,6 +56,8 @@ Pid int references parts(pid) on delete cascade,
 Quantity int not NULL,
 Primary key(sid,pid));
 
+create table supply_copy as(select * from supply);
+
 edit filename.sql
 
 declare
