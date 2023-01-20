@@ -82,7 +82,7 @@ set serveroutput on
 //mongodb
 db.createCollection("Excercise2")
 db.Excercise2.insert({'sid':101,'pid':1,'pname':"nails",'sname':"Ryan",'color':"black"})
-db.Excercise2.update({'sid':101},{$set:{'color':"grey"}},{multi:true});
-db.Excercise2.find().pretty();
-db.Excercise2.find({'pid':1}).pretty();
+db.Excercise2.update({'sid':101},{$set:{'color':"grey"}},{multi:true})
+db.Excercise2.find().pretty()
+db.Excercise2.find({'pid':1}).pretty()
 
