@@ -1,0 +1,96 @@
+CREATE TABLE branch(
+  bno number(10) primary key,
+  addr varchar(30)
+);
+  
+CREATE TABLE account(
+  accno number(10) primary key,
+  balance number(10,2),
+  type varchar(30)
+);
+
+CREATE TABLE customer(
+  custno number(10),
+  name varchar(30),
+  phone number(10),
+  bno number(10) references branch(bno) on delete cascade,
+  accno number(4) references account(accno) on delete cascade,
+  primary key(custno,bno,accno)
+);
+
+CREATE TABLE transact(
+  accno number(4) references account(accno) on delete cascade,
+  amount number(10,2),
+  transtype varchar(30),
+  transid number(10) primary key
+);
+
+ 
+INSERT INTO branch VALUES(01, 'Bengaluru');
+INSERT INTO branch VALUES(02, 'Kolkata');
+INSERT INTO branch VALUES(03, 'Chennai');
+INSERT INTO branch VALUES(04, 'Mumbai');
+INSERT INTO branch VALUES(05, 'Delhi');
+
+
+
+INSERT INTO account VALUES(56901,10000,'Savings');
+INSERT INTO account VALUES(66901,15000,'Current');
+INSERT INTO account VALUES(56902,12000,'Savings');
+INSERT INTO account VALUES(56903,13000,'Savings');
+INSERT INTO account VALUES(56904,14000,'Savings');
+INSERT INTO account VALUES(56905,10600,'Savings');
+INSERT INTO account VALUES(56906,70700,'Savings');
+INSERT INTO account VALUES(66906,170000,'Current');
+
+
+ 
+INSERT INTO customer VALUES(101, 'Raj', 1234567890, 01, 56901);
+INSERT INTO customer VALUES(101, 'Raj', 1234567890, 01, 66901);
+INSERT INTO customer VALUES(102, 'Kumar', 0987654321, 02, 56902);
+INSERT INTO customer VALUES(103, 'Kushal', 1222333444, 02, 56903);
+INSERT INTO customer VALUES(104, 'Manoj', 1123567890, 03, 56904);
+INSERT INTO customer VALUES(105, 'Ram', 1234567891, 04, 56905);
+INSERT INTO customer VALUES(106, 'Kunal', 1234565890, 05, 56906);
+INSERT INTO customer VALUES(106, 'Kunal', 1234565890, 05, 66906);
+
+
+
+INSERT INTO transact VALUES(56901,5000,'Deposit',30001);
+INSERT INTO transact VALUES(56901,3000,'Withdraw',30002);
+INSERT INTO transact VALUES(56901,2000,'Deposit',30003);
+INSERT INTO transact VALUES(56902,33000,'Withdraw',30004);
+INSERT INTO transact VALUES(56903,5400,'Deposit',30005);
+INSERT INTO transact VALUES(56904,54000,'Deposit',30006);
+INSERT INTO transact VALUES(56904,5000,'Withdraw',30007);
+INSERT INTO transact VALUES(56905,6600,'Withdraw',30008);
+
+1.
+select custno, name, phone from customer
+join account on customer.accno=account.accno
+where type='Savings'
+intersect
+select custno, name, phone from customer
+join account on customer.accno=account.accno
+where type='Current';
+
+2.
+select customer.bno,addr,count(customer.accno) from branch,customer
+where branch.bno=customer.bno
+group by customer.bno,addr;
+
+3.
+select custno,name,phone,count(transid) from customer,transact
+where customer.accno=transact.accno
+group by transact.accno
+having count(transid) >=3;
+
+4.
+select branch.bno, addr, count(customer.accno) from branch,customer
+where customer.bno=branch.bno
+group by customer.bno
+having count(customer.accno)<=(select (count(account.accno)/count(branch.bno)) from account,branch);
+
+//mongo
+
+
