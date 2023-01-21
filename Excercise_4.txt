@@ -92,5 +92,16 @@ group by customer.bno
 having count(customer.accno)<=(select (count(account.accno)/count(branch.bno)) from account,branch);
 
 //mongo
+db.createCollection("test")
+db.test.insertMany([
+    {'bid':1,'bname':'hdfc','cid':100,'cname':'ryan'},
+    {'bid':2,'bname':'axis','cid':100,'cname':'ryan'},
+    {'bid':3,'bname':'icici','cid':101,'cname':'damsel'},
+    {'bid':1,'bname':'hdfc','cid':102,'cname':'katy'}
+]);
+
+db.test.findOne({'bid':1},{'bname':1,'_id':0})
+db.test.aggregate([{$group : {_id : { 'Customer ID' : '$cid'},Number_of_Accounts : {$sum : 1}}}])
+
 
 
