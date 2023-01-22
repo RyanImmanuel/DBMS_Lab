@@ -19,10 +19,10 @@ CREATE TABLE customer(
 );
 
 CREATE TABLE transact(
-  accno number(4) references account(accno) on delete cascade,
-  amount number(10,2),
+  accno number references account(accno) on delete cascade,
+  amount number,
   transtype varchar(30),
-  transid number(10) primary key
+  transid number primary key
 );
 
  
@@ -102,6 +102,30 @@ db.test.insertMany([
 
 db.test.findOne({'bid':1},{'bname':1,'_id':0})
 db.test.aggregate([{$group : {_id : { 'Customer ID' : '$cid'},Number_of_Accounts : {$sum : 1}}}])
+
+//plsql
+
+create table branch_copy as (select * from branch where 1=2);
+
+declare 
+    cursor curr is select * from branch;
+    rows curr%rowtype;
+    counter int;
+begin
+    open curr;
+    loop
+    fetch curr into rows;
+    exit when curr%notfound;
+    insert into branch_copy values(rows.bno,rows.addr);
+    end loop;
+    counter:=curr%rowcount;
+    close curr;
+    dbms_output.put_line(counter|| 'rows were edited');
+end;
+/
+    
+
+
 
 
 
